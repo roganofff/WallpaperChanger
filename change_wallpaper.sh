@@ -16,9 +16,10 @@
 #               If no web-cam was found, make note in log
 # ещё такая фишечка, что на картинке с котом будет логин компа +
 #  
+. ./logger.sh
 
 URL=https://cataas.com/cat?width=1920
-URL2=https://cataa.com/cat/says/thief
+URL2=https://cataas.com/cat/says/thief
 PIC=picture.jpg
 pswd_filename=password
 tn=$'\t\n'
@@ -34,6 +35,13 @@ function q_to_quit {
 function write_hash_md5 {
     pswd_hash=`echo $1 | md5sum | awk '{print $1}'`
     echo $pswd_hash >> $pswd_filename
+}
+
+function download_cat {
+    echo "Downloading a picture of a cat:3"
+    curl $1 -o $PIC
+    change_wallpaper $PIC   
+    echo "Wallpaper has been changed."
 }
 
 # Регистрация: создаём файл, запрашивем пароль, хэшируем и кладём в файл
@@ -93,15 +101,11 @@ function change_wallpaper {
 
 if [[ ! -f $pswd_filename ]]; then
     registration
-    curl $URL -o $PIC
-    change_wallpaper $PIC
-    echo "Wallpaper has been changed."
+    download_cat $URL
 else
     authorization
     if [[ $? -eq 1 ]]; then
-        curl $URL -o $PIC
-        change_wallpaper $PIC
-        echo "Wallpaper has been changed."
+        download_cat $URL
     else
         echo "Searching for a webcam..."
         webcams=`find /dev/ -name video* | wc -l` 
@@ -109,13 +113,13 @@ else
         echo "Cameras found: $webcams."
         if [[ $webcams -gt 0 ]]; then
             echo "Taking a webcam shot..."
-            fswebcam -r 1280x720 --jpeg 85 -D 1 $PIC
+            fswebcam -r 1280x720 --jpeg 100 -D 1 $PIC
             sleep 1
-            change_wallpaper $PIC
+            change_wallpaper
             echo "Wallpaper has been changed."
         else
             echo "No cameras was found."
-            curl $URL2 -o $PIC
+            download_cat $URL2
         fi
     fi
 fi
