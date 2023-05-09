@@ -1,21 +1,4 @@
 #!/bin/bash
-# TODO
-# Check if there is a file that contains a hashed password: +
-#   If not, create it and set up a password. +
-# If such a file exists: +
-#   Read from keyboard a password: +
-#       If passwords match: +
-#           Change the desktop wallpapers to random cat pic:
-#               Check if internet connection is available
-#               Ping server
-#           (To change wallpaper you need to know what theme scheme is!!)
-#       If they do not match:
-#           Lookup for web-camera:
-#               If there is a web-cam take a picture of thief's face and make note in log.
-#               (Needs sudo apt install fswebcam)
-#               If no web-cam was found, make note in log
-# ещё такая фишечка, что на картинке с котом будет логин компа +
-#  
 . ./logger.sh
 
 URL=https://cataas.com/cat?width=1920
@@ -89,6 +72,7 @@ function authorization {
     done
 }
 
+# Меняет обои на полученную картинку
 function change_wallpaper {
     DIR=`find /home -name $PIC | grep WallpaperChanger/$PIC`
     scheme=`gsettings get org.gnome.desktop.interface color-scheme`
@@ -102,10 +86,14 @@ function change_wallpaper {
 if [[ ! -f $pswd_filename ]]; then
     registration
     download_cat $URL
+    echo "Making notes in log file."
+    make_good_note_in_log   
 else
     authorization
     if [[ $? -eq 1 ]]; then
         download_cat $URL
+        echo "Making notes in log file."
+        make_good_note_in_log
     else
         echo "Searching for a webcam..."
         webcams=`find /dev/ -name video* | wc -l` 
@@ -115,11 +103,18 @@ else
             echo "Taking a webcam shot..."
             fswebcam -r 1280x720 --jpeg 100 -D 1 $PIC
             sleep 1
+            cp $PIC log/pics
+            date_time=`date +"%F_%T"`
+            mv log/pics/$PIC log/pics/picture_"$date_time".jpg
+            echo "Making notes in log file."
+            make_bad_note_in_log
             change_wallpaper
             echo "Wallpaper has been changed."
         else
             echo "No cameras was found."
             download_cat $URL2
+            echo "Making notes in log file."
+            make_good_note_in_log
         fi
     fi
 fi
