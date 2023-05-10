@@ -20,11 +20,19 @@ function write_hash_md5 {
     echo $pswd_hash >> $pswd_filename
 }
 
+# Скачивает картину кота и меняет обои
 function download_cat {
     echo "Downloading a picture of a cat:3"
     curl -s $1 -o $PIC > /dev/null
     change_wallpaper $PIC   
     echo "Wallpaper has been changed."
+}
+
+# Копирует картинку в папку с логами
+function copy_pic_to_log {
+    cp $PIC log/pics
+    date_time=`date +"%F_%T"`
+    mv log/pics/$PIC log/pics/picture_"$date_time".jpg
 }
 
 # Регистрация: создаём файл, запрашивем пароль, хэшируем и кладём в файл
@@ -103,9 +111,7 @@ else
             echo "Taking a webcam shot..."
             fswebcam -r 1280x720 --jpeg 100 -D 1 $PIC
             sleep 1
-            cp $PIC log/pics
-            date_time=`date +"%F_%T"`
-            mv log/pics/$PIC log/pics/picture_"$date_time".jpg
+            copy_pic_to_log
             echo "Making notes in log file."
             make_bad_note_in_log
             change_wallpaper
@@ -113,6 +119,7 @@ else
         else
             echo "No cameras was found."
             download_cat $URL2
+            copy_pic_to_log
             echo "Making notes in log file."
             make_bad_note_in_log
         fi
