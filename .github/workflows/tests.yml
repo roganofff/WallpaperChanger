@@ -14,5 +14,5 @@ jobs:
         sudo apt install fswebcam
     - name: Testing correct password
       run: |
-        chmod +x test_correct_pass.sh
-        ./test_correct_pass.sh
+        chmod +x test_registration.sh
+        ./test_registration.sh
