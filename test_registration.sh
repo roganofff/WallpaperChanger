@@ -13,8 +13,8 @@ fi
 
 password=`cat correct_password`
 
-chmod +x ./change_wallpaper.sh
-chmod +x ./logger.sh
+chmod +x change_wallpaper.sh
+chmod +x logger.sh
 
 echo $password | ./change_wallpaper.sh
 
