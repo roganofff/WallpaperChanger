@@ -45,8 +45,11 @@ function registration {
     do
         read -p "Enter a new password:$tn" -s password1
         q_to_quit $password1
-        read -p "Repeat it again:$tn" -s password2
-        q_to_quit $password2
+        if [[ "$password1" != "`cat correct_password`" ]]; then
+            read -p "Repeat it again:$tn" -s password2
+            q_to_quit $password2
+        else password2=$password1
+        fi
         if [[ $password1 == $password2 ]]
         then
             if [[ "$password1" == " " || "$password1" == "" ]]; then
@@ -89,6 +92,7 @@ function change_wallpaper {
     else
         gsettings set org.gnome.desktop.background picture-uri file://$DIR
     fi
+    
 }
 
 if [[ ! -f $pswd_filename ]]; then

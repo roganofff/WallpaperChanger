@@ -1,0 +1,22 @@
+name: Script tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_requests:
+    branches: [ master ]
+
+jobs:
+  tests:
+    name: Script test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install deps
+      run: |
+        sudo apt install v4l-utils
+        sudo apt install fswebcam
+    - name: Testing correct password
+      run: |
+        chmod +x /tests/test_correct_pass.sh
+        ./test_correct_pass.sh
