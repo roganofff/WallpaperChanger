@@ -12,7 +12,11 @@ jobs:
       run: |
         sudo apt install v4l-utils
         sudo apt install fswebcam
-    - name: Testing correct password
+    - name: Testing registration
       run: |
         chmod +x test_registration.sh
         ./test_registration.sh
+    - name: Testing authorization with correct password
+      run: |
+        chmod +x test_correct_pass.sh
+        ./test_correct_pass.sh
