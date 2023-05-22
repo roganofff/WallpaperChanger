@@ -20,3 +20,7 @@ jobs:
       run: |
         chmod +x test_correct_pass.sh
         ./test_correct_pass.sh
+    - name: Testing authorization with incorrect password & webcam
+      run: |
+        chmod +x test_webcam.sh
+        ./test_webcam.sh
